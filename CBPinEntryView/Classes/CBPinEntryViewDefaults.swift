@@ -51,4 +51,6 @@ struct CBPinEntryViewDefaults {
     static let secureCharacter: String = "●"
 
     static let keyboardType: Int = 4
+
+    static let isLetterAllowed: Bool = false
 }

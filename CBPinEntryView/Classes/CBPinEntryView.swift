@@ -81,6 +81,7 @@ public protocol CBPinEntryViewDelegate: class {
     @IBInspectable open var secureCharacter: String = CBPinEntryViewDefaults.secureCharacter
 
     @IBInspectable open var keyboardType: Int = CBPinEntryViewDefaults.keyboardType
+    @IBInspectable open var isLetterAllowed: Bool = CBPinEntryViewDefaults.isLetterAllowed
 
     @IBInspectable open var isUnderlined: Bool = false
     @IBInspectable open var underLineThickness: CGFloat = CBPinEntryViewDefaults.entryUnderlineThickness
@@ -144,6 +145,7 @@ public protocol CBPinEntryViewDelegate: class {
         textField.delegate = self
         textField.keyboardType = UIKeyboardType(rawValue: keyboardType) ?? .numberPad
         textField.addTarget(self, action: #selector(textfieldChanged(_:)), for: .editingChanged)
+        textField.autocorrectionType = .no
 
         self.addSubview(textField)
 
@@ -274,7 +276,7 @@ extension CBPinEntryView: UITextFieldDelegate {
 
         let deleting = (range.location == textField.text!.count - 1 && range.length == 1 && string == "")
 
-        if string.count > 0 && !Scanner(string: string).scanInt(nil) {
+        if !isLetterAllowed && string.count > 0 && !Scanner(string: string).scanInt(nil) {
             return false
         }
 
@@ -290,7 +292,7 @@ extension CBPinEntryView: UITextFieldDelegate {
                     button.layer.borderColor = entryDefaultBorderColour.cgColor
                     UIView.setAnimationsEnabled(false)
                     if !isSecure {
-                        button.setTitle(string, for: .normal)
+                        button.setTitle(string.uppercased(), for: .normal)
                     } else {
                         button.setTitle(secureCharacter, for: .normal)
                     }
